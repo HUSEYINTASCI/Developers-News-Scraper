@@ -1,1 +1,1 @@
-# Programming-News-Scraper
+# Developers-News-Scraper
