@@ -24,7 +24,69 @@ app.get("/articles", function(req, res) {
   });
 });
 
+app.get("/scrape", function(req, res) {
+  axios.get("https://www.reddit.com/r/technology/").then(function(response) {
+  var newArticleCount = 0; 
+  var $ = cheerio.load(response.data); 
+console.log(response);
+  $("p.title").each(function(i, element) {
+      var result = {};
+      result.title = $(this).text();
+      result.link = $(this).children().attr("href");
+      db.Article.findOne({link: result.link})
+      .then(function(dbArticleFound) {
+        if (!dbArticleFound) {
+          db.Article.create(result)
+          .then(function(dbArticle) {
+              console.log(dbArticle);
+              newArticleCount++;
+          })
+          .catch(function(err) {
+              console.log(err);
+          });  
+        } else {
+          console.log("Article already exists.  Moving onto next.");
+        }
+      });
+  });
+  res.send("Scrape Complete");
+  });
+});
 
+app.get("/comments/:id", function(req, res) {
+  db.Comment.find({ articleID: req.params.id })
+  .then(function(dbArticle) {
+      res.json(dbArticle);
+  })
+  .catch(function(err) {
+      res.json(err);
+  });
+});
+
+app.post("/comments/:id", function(req, res) {
+  db.Comment.create(req.body)
+  .then(function(dbComment) {
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { comment: dbComment._id }, { new: true });
+  })
+  .then(function(dbArticle) {
+      res.json(dbArticle);
+  })
+  .catch(function(err) {
+      res.json(err);
+  });
+});
+
+app.get("/comments/delete/:id", function(req, res) {
+db.Comment.findOneAndDelete({ _id: req.params.id })
+  .then(function() {
+    console.log("Delete operation on comment should be complete...");
+  }, function(){
+    console.log("Delete operation failed.");
+  })
+  .catch(function(err) {
+    res.json(err);
+  });
+});
 
 
 

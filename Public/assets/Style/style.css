@@ -1,0 +1,28 @@
+
+nav {
+    background-color: lightblue;
+}
+
+a {
+    color:blue;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+hr {
+    color:gray;
+}
+
+.card {
+    background-color: gray;
+}
+
+.commentLink {
+    color: red !important;
+}
+
+.secondary-content > .material-icons {
+    color:red !important;
+}
