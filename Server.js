@@ -11,7 +11,7 @@ app.use(express.static("Public"));
 
 
 //Mongo DB Connection
-var mongodb_url = process.env.mongodb_url || "mongodb://localhost:27017/dnews_db";
+var mongodb_url = "mongodb://<dbuser>:<dbpassword>@ds141168.mlab.com:41168/heroku_wlq4xvlt" || "mongodb://localhost:27017/dnews_db";
 mongoose.connect(mongodb_url, {useUnifiedTopology: true});
 
 
