@@ -1,14 +1,20 @@
+body {
+    background-image: url("../images/backgraund.jpg");
+    background-size: 100% auto;
+    background-repeat: repeat-y;
+}
 
 nav {
     background-color: lightblue;
 }
-
+ 
 a {
-    color:blue;
+    color:black;
 }
 
 a:hover {
     cursor: pointer;
+   
 }
 
 hr {
@@ -16,7 +22,7 @@ hr {
 }
 
 .card {
-    background-color: gray;
+    background-color:lightgoldenrodyellow;
 }
 
 .commentLink {
