@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Developers News Scraper</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link
+    href="https://media.giphy.com/media/VlJkP9Vxi4nkI/giphy.gif" rel="icon" type="image/x-icon"/>
     <link rel="stylesheet" href="assets/Style/style.css">
 </head>
 <body>
@@ -81,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
       url: "/comments/" + thisId
     })
       .then(function(data) {
+        console.log(data);
         commentModal.open();
         if (data.length > 0) {
           for (var i = 0; i < data.length; i++) {
