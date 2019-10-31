@@ -11,7 +11,7 @@ app.use(express.static("Public"));
 
 
 //Mongo DB Connection
-var MONGODB_URI = "mongodb://heroku_wlq4xvlt:3eh8r4hs5p8otra45k1avm1m6h@ds141168.mlab.com:41168/heroku_wlq4xvlt" || "mongodb://localhost:27017/dnews_db";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/dnews_db";
 mongoose.connect(MONGODB_URI, {useUnifiedTopology: true});
 
 
