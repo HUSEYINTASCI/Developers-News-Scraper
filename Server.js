@@ -4,17 +4,17 @@ var mongoose = require("mongoose");
 var axios = require("axios");
 var cheerio = require("cheerio");
 var db = require("./Javascript");
-
+ 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("Public"));
 
-
+ 
 //Mongo DB Connection
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/dnews_db";
 mongoose.connect(MONGODB_URI, {useUnifiedTopology: true});
 
-
+//Getting Articles
 app.get("/articles", function(req, res) {
   db.Article.find({})
   .then(function(dbArticle) {
@@ -25,7 +25,8 @@ app.get("/articles", function(req, res) {
       res.json(err);
   });
 });
-
+//==============================================================================================================================
+//Scraping From old.reddit
 app.get("/scrape", function(req, res) {
   axios.get("https://old.reddit.com/r/webdev").then(function(response) {
   var newArticleCount = 0; 
@@ -47,14 +48,15 @@ app.get("/scrape", function(req, res) {
               console.log(err);
           });  
         } else {
-          console.log("Article already exists.  Moving onto next.");
+          
         }
       });
   });
   res.send("Scrape Complete");
   });
 });
-
+//=======================================================================================================================
+//Getting Comment
 app.get("/comments/:id", function(req, res) {
   db.Comment.find({ articleID: req.params.id })
   .then(function(dbArticle) {
@@ -65,6 +67,7 @@ app.get("/comments/:id", function(req, res) {
   });
 });
 
+//Saving Comment
 app.post("/comments/:id", function(req, res) {
   db.Comment.create(req.body)
   .then(function(dbComment) {
@@ -78,6 +81,7 @@ app.post("/comments/:id", function(req, res) {
   });
 });
 
+//Deleting Comment
 app.get("/comments/delete/:id", function(req, res) {
 db.Comment.findOneAndDelete({ _id: req.params.id })
   .then(function() {
@@ -89,6 +93,34 @@ db.Comment.findOneAndDelete({ _id: req.params.id })
     res.json(err);
   });
 });
+
+
+//Deleting Article
+app.get("/articles/delete/:id", function(req, res) {
+  db.Article.remove({ _id: req.params.id })
+    .then(function() {
+      console.log("Delete operation on comment should be complete...");
+    }, function(){
+      console.log("Delete operation failed.");
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+  });    
+ 
+
+  //Deleting All Articles
+  app.get("/articles/deleteall", function(req, res) {
+    db.Article.remove({})
+      .then(function() {
+        console.log("Delete operation on comment should be complete...");
+      }, function(){
+        console.log("Delete operation failed.");
+      })
+      .catch(function(err) {
+        res.json(err);
+      });
+    }); 
 
 
 

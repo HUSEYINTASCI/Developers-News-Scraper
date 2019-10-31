@@ -26,9 +26,17 @@ hr {
 }
 
 .commentLink {
-    color: red !important;
+    color: green !important;
 }
 
 .secondary-content > .material-icons {
-    color:red !important;
+    color:green !important;
+}
+
+.artdel{
+    position: inherit;
+    float: right;
+    color: red;
+    text-transform: uppercase;
+    cursor: pointer;
 }

@@ -15,7 +15,7 @@
             <a class="brand-logo center">Developers News Scraper</a>
             <ul id="nav-mobile" class="left">
               <li><a class="tooltipped" data-position="bottom" data-tooltip="Scrape New Articles" id="scrape"><i class="material-icons">Scrap</i></a></li>
-              <li><a class="tooltipped" data-position="bottom" data-tooltip="Clear" id="clear"><i class="material-icons">Clear</i></a></li>
+              <li><a class="tooltipped" data-position="bottom" data-tooltip="Clear" id="clear"><i class="material-icons">Delete All Articles</i></a></li>
             </ul>
           </div>
         </nav>
@@ -42,13 +42,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
- 
-
 document.addEventListener('DOMContentLoaded', function() {
   var commentModalInit = document.querySelector('.modal');
   var commentModal = M.Modal.init(commentModalInit);
   $(".tooltipped").tooltip();
 
+//Creating Articles
   var getArticles = function() {
     $("#articles").empty();
     $.getJSON("/articles", function(data) {
@@ -57,13 +56,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var articleCard = $("<div>");
         articleCard.addClass("card");
         articleCard.attr("data-id", data[i]._id);
-        articleCard.html("<div class='card-content'><span class='card-title'><a href='"+"https://old.reddit.com"+data[i].link+"' target='_blank'>"+data[i].title+"</a></span></div><div class='card-action'><a class='commentLink' data-id='"+data[i]._id+"'>Comments</a></div>");
+        articleCard.html("<div class='card-content'><span class='card-title'><a href='"+"https://old.reddit.com"+data[i].link+"' target='_blank'>"+data[i].title+"</a></span></div><div class='card-action'><a class='commentLink' data-id='"+data[i]._id+"'>Comments</a><a class='artdel' data-id='"+data[i]._id+"'>Delete</a></div>");
         $("#articles").prepend(articleCard);
       }
     });
   }
   
-  getArticles();
+   
 
   $(document).on("click", function() {
     if (!commentModal.isOpen) {
@@ -72,14 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
       $("#commentEntry").val("");
       M.textareaAutoResize($("#commentEntry"));
     }
-  });
+  }); 
 
-  $(document).on("click", "#clear", function(){
-    $("#articles").empty();
-
-  });
-
-
+//Creat Comment
   $(document).on("click", ".commentLink", function() {
     var thisId = $(this).attr("data-id");
     $.ajax({
@@ -98,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
 
- 
+//  Saving Commnet 
   $(document).on("click", "#saveComment", function() {
     var thisId = $(this).attr("data-id");
     $("#comments").empty();
@@ -124,11 +118,12 @@ document.addEventListener('DOMContentLoaded', function() {
       url: "/scrape"
     })
       .then(function() {
-      M.toast({html: '<p>Scraping new articles. <p><br><div class="preloader-wrapper small active"><div class="spinner-layer spinner-red-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>', displayLength: 15000});
+      M.toast({html: '<p>Scraping new articles. <p><br><div class="preloader-wrapper small active"><div class="spinner-layer spinner-red-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>', displayLength: 1500});
       setTimeout(getArticles, 300);
       });
   });
 
+  //Deleting Comment
   $(document).on("click", ".deleteComment", function(event) {
     event.preventDefault();
     var thisId = $(this).attr("data-commentId");
@@ -139,7 +134,39 @@ document.addEventListener('DOMContentLoaded', function() {
     })
   })
 
+
+//Deleting Article
+  $(document).on("click", ".artdel", function(event) {
+    event.preventDefault();
+    if (confirm('Do you want delete this article?')) {
+      var thisId = $(this).attr("data-id");
+    $(this).parents(".card").remove();
+    $.ajax({
+      method: "GET",
+      url: "/articles/delete/" + thisId
+    }) 
+} else {
+    
+}
+  })
+
 });
+
+// Deleting All Articles 
+$(document).on("click", "#clear", function(){
+    
+    if (confirm('Do you want delete this article?')) {
+      $("#articles").empty();
+    $.ajax({
+      method: "GET",
+      url: "/articles/deleteall" 
+    }) 
+} else {
+    
+}
+
+  });
+
 
 </script> 
 </body>
